@@ -22,10 +22,15 @@ class _LoginState extends State<Login> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SvgPicture.asset(
-              "assets/Icon/back.svg",
-              width: 10,
-              height: 18,
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: SvgPicture.asset(
+                "assets/Icon/back.svg",
+                width: 10,
+                height: 18,
+              ),
             ),
             Container(
               margin: EdgeInsets.symmetric(vertical: 29),
