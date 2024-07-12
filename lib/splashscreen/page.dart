@@ -1,3 +1,4 @@
+import 'package:coursphere/auth/login.dart';
 import 'package:coursphere/components/navbar.dart';
 import 'package:coursphere/home/home.dart';
 import 'package:coursphere/util/data.dart';
@@ -48,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 50),
+                    duration: const Duration(milliseconds: 0),
                     child: Column(
                       key: ValueKey<int>(_currentIndex),
                       children: [
@@ -123,7 +124,7 @@ class _SplashScreenState extends State<SplashScreen> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Navbar(),
+                                  builder: (context) => Login(),
                                 ),
                               );
                             }
