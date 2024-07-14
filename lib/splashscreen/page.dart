@@ -121,7 +121,7 @@ class _SplashScreenState extends State<SplashScreen> {
                             if (_currentIndex < splashData.length - 1) {
                               _currentIndex++;
                             } else {
-                              Navigator.pushReplacement(
+                              Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => Login(),
