@@ -1,3 +1,6 @@
+import 'package:coursphere/book/book.dart';
+import 'package:coursphere/profile/profile.dart';
+import 'package:coursphere/search/search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:coursphere/home/home.dart';
@@ -75,16 +78,16 @@ class _NavbarState extends State<Navbar> {
         index: activeIndex,
         children: [
           Home(),
-          Center(child: Text('Search Page')),
+          Search(),
           Center(child: Text('Start Page')),
-          Center(child: Text('Book Page')),
-          Center(child: Text('Profile Page')),
+          Book(),
+          Profile(),
         ],
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
+              topLeft: Radius.circular(0.0), topRight: Radius.circular(0.0)),
           boxShadow: [
             BoxShadow(
                 color: Colors.grey.shade400,
@@ -112,7 +115,7 @@ class _NavbarState extends State<Navbar> {
               _buildNavItem(
                   index: 1, asset: 'assets/Icon/Search.svg', label: 'Search'),
               _buildNavItem(
-                  index: 2, asset: 'assets/Icon/start.svg', label: 'Start'),
+                  index: 2, asset: 'assets/Icon/start.svg', label: 'Video'),
               _buildNavItem(
                   index: 3, asset: 'assets/Icon/book.svg', label: 'Book'),
               _buildNavItem(
