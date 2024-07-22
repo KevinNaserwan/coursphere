@@ -1,4 +1,7 @@
 import 'package:coursphere/auth/register.dart';
+import 'package:coursphere/components/navbar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:coursphere/controller/UserController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -14,6 +17,12 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool _savePassword = false;
+  bool _isLoading = false;
+  final UserController userController = UserController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  String? _emailError;
+  String? _passwordError;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,6 +88,7 @@ class _LoginState extends State<Login> {
                         const SizedBox(height: 6),
                         TextField(
                           // Add TextField
+                          controller: emailController,
                           decoration: InputDecoration(
                             hintText: 'Enter your email',
                             hintStyle: TextStyle(
@@ -86,7 +96,24 @@ class _LoginState extends State<Login> {
                                 fontWeight: FontWeight.w400),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none,
+                              borderSide: BorderSide(
+                                  color: _emailError != null
+                                      ? Colors.red
+                                      : Colors.transparent),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                  color: _emailError != null
+                                      ? Colors.red
+                                      : Colors.transparent),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                  color: _emailError != null
+                                      ? Colors.red
+                                      : Colors.transparent),
                             ),
                             filled: true,
                             fillColor: Colors.grey.shade200,
@@ -104,7 +131,15 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                           ),
-                        )
+                        ),
+                        if (_emailError != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5, left: 10),
+                            child: Text(
+                              _emailError!,
+                              style: TextStyle(color: Colors.red, fontSize: 12),
+                            ),
+                          ),
                       ],
                     ),
                     SizedBox(height: 16),
@@ -126,6 +161,7 @@ class _LoginState extends State<Login> {
                         const SizedBox(height: 6),
                         TextField(
                           // Add TextField
+                          controller: passwordController,
                           decoration: InputDecoration(
                             hintText: 'Enter your password',
                             hintStyle: TextStyle(
@@ -133,7 +169,24 @@ class _LoginState extends State<Login> {
                                 fontWeight: FontWeight.w400),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none,
+                              borderSide: BorderSide(
+                                  color: _passwordError != null
+                                      ? Colors.red
+                                      : Colors.transparent),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                  color: _passwordError != null
+                                      ? Colors.red
+                                      : Colors.transparent),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                  color: _passwordError != null
+                                      ? Colors.red
+                                      : Colors.transparent),
                             ),
                             filled: true,
                             fillColor: Colors.grey.shade200,
@@ -151,7 +204,15 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                           ),
-                        )
+                        ),
+                        if (_passwordError != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5, left: 10),
+                            child: Text(
+                              _passwordError!,
+                              style: TextStyle(color: Colors.red, fontSize: 12),
+                            ),
+                          ),
                       ],
                     )
                   ],
@@ -211,24 +272,17 @@ class _LoginState extends State<Login> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 16.0, horizontal: 30),
                     ),
-                    onPressed: () {
-                      setState(() {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Login(),
+                    onPressed: _isLoading ? null : () => _loginUser(context),
+                    child: _isLoading
+                        ? CircularProgressIndicator(color: Colors.white)
+                        : Text(
+                            'Sign In',
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        );
-                      });
-                    },
-                    child: Text(
-                      'Sign In',
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
                   ),
                 ),
               ),
@@ -367,5 +421,52 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
+  }
+
+  void _loginUser(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+      _emailError = null;
+      _passwordError = null;
+    });
+
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+
+    try {
+      Map<String, dynamic> response =
+          await userController.loginUser(email, password);
+      // Save the token
+      if (response.containsKey('token')) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('auth_token', response['token']);
+      }
+      // Navigate to Navbar screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Navbar(),
+        ),
+      );
+    } catch (e) {
+      // Handle login failure
+      print('Failed to log in: $e');
+
+      // Show error messages
+      setState(() {
+        if (e.toString().contains('User not found: record not found')) {
+          _emailError = 'User not found. Please check your email.';
+        } else if (e.toString().contains('wrong credentials')) {
+          _passwordError = 'Incorrect password. Please try again.';
+        } else {
+          // If it's a different error, show a generic message
+          _emailError = 'Login failed. Please check your email and password.';
+        }
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 }
