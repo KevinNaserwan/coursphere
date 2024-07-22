@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CourseCard extends StatelessWidget {
-  const CourseCard({super.key});
+  final Map<String, dynamic> course;
+
+  const CourseCard({Key? key, required this.course}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,20 +34,20 @@ class CourseCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Dart',
+                  course['category']['name'],
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 13,
                     color: const Color(0xFF1A374D),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Container(
-                  width: 150,
+                  width: 300,
                   child: Text(
-                    'Dart Unit Test And Collection',
+                    course['title'],
                     style: GoogleFonts.poppins(
-                      fontSize: 18,
+                      fontSize: 16,
                       color: Colors.black,
                       fontWeight: FontWeight.w600,
                     ),
@@ -58,7 +60,7 @@ class CourseCard extends StatelessWidget {
                         color: const Color(0xFF406882), size: 16),
                     const SizedBox(width: 8),
                     Text(
-                      '2 Videos',
+                      '${course['videos'].length} Videos',
                       style: GoogleFonts.poppins(
                         fontSize: 12,
                         color: Color(0xFF406882),
@@ -69,7 +71,7 @@ class CourseCard extends StatelessWidget {
                     Icon(Icons.access_time, color: Color(0xFF406882), size: 16),
                     const SizedBox(width: 8),
                     Text(
-                      '4 H 18 M',
+                      _calculateTotalTime(course['videos']),
                       style: GoogleFonts.poppins(
                         fontSize: 12,
                         color: Color(0xFF406882),
@@ -79,7 +81,7 @@ class CourseCard extends StatelessWidget {
                     const Spacer(),
                     Row(
                       children: List.generate(
-                        3,
+                        course['star'],
                         (index) =>
                             Icon(Icons.star, color: Colors.yellow, size: 16),
                       ),
@@ -92,5 +94,16 @@ class CourseCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _calculateTotalTime(List<dynamic> videos) {
+    int totalMinutes = 0;
+    for (var video in videos) {
+      List<String> timeParts = video['time'].split(':');
+      totalMinutes += int.parse(timeParts[0]) * 60 + int.parse(timeParts[1]);
+    }
+    int hours = totalMinutes ~/ 60;
+    int minutes = totalMinutes % 60;
+    return '$hours H ${minutes.toString().padLeft(2, '0')} M';
   }
 }
