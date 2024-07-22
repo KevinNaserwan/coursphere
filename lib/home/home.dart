@@ -1,3 +1,5 @@
+import 'package:coursphere/controller/BookCategoryController.dart';
+import 'package:coursphere/controller/CourseController.dart';
 import 'package:coursphere/home/component/category_chip.dart';
 import 'package:coursphere/home/component/course.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +13,40 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final BookCategoryController _controller = BookCategoryController();
+  final CourseController _courseController = CourseController();
+  List<dynamic> _categories = [];
+  List<dynamic> _courses = [];
+
   @override
+  void initState() {
+    super.initState();
+    _fetchCategories();
+    _fetchCourses();
+  }
+
+  Future<void> _fetchCategories() async {
+    try {
+      final categories = await _controller.getAllBookCategories();
+      setState(() {
+        _categories = categories;
+      });
+    } catch (e) {
+      print('Error fetching categories: $e');
+    }
+  }
+
+  Future<void> _fetchCourses() async {
+    try {
+      final courses = await _courseController.getAllCourse();
+      setState(() {
+        _courses = courses;
+      });
+    } catch (e) {
+      print('Error fetching courses: $e');
+    }
+  }
+
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
@@ -81,26 +116,20 @@ class _HomeState extends State<Home> {
                     padding: const EdgeInsets.only(left: 20.0),
                     child: SizedBox(
                       height: 50,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          CategoryChip(
-                              label: 'Java',
-                              iconPath: 'assets/images/category/java.png'),
-                          CategoryChip(
-                              label: 'Python',
-                              iconPath: 'assets/images/category/python.png'),
-                          CategoryChip(
-                              label: 'PHP',
-                              iconPath: 'assets/images/category/php.png'),
-                          CategoryChip(
-                              label: 'JavaScript',
-                              iconPath: 'assets/images/category/js.png'),
-                          CategoryChip(
-                              label: 'Dart',
-                              iconPath: 'assets/images/category/dart.png'),
-                        ],
-                      ),
+                      child: _categories.isEmpty
+                          ? Center(child: CircularProgressIndicator())
+                          : ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: _categories.length,
+                              itemBuilder: (context, index) {
+                                final category = _categories[index];
+                                return CategoryChip(
+                                  label: category['name'],
+                                  iconPath:
+                                      'assets/images/category/${category['name'].toLowerCase()}.png',
+                                );
+                              },
+                            ),
                     ),
                   ),
                 ],
@@ -120,43 +149,45 @@ class _HomeState extends State<Home> {
                     _buildSectionTitle("On Going Course"),
                     SizedBox(height: 20),
                     SizedBox(
-                      height:
-                          271, // Tetap menggunakan height tetap untuk ListView
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        children: List.generate(
-                          3,
-                          (index) => Padding(
-                            padding: EdgeInsets.only(right: 16),
-                            child: SizedBox(
-                              width: 320,
-                              child: CourseCard(),
+                      height: 241,
+                      child: _courses.isEmpty
+                          ? Center(child: CircularProgressIndicator())
+                          : ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: _courses.length,
+                              itemBuilder: (context, index) {
+                                final course = _courses[index];
+                                return Padding(
+                                  padding: EdgeInsets.only(left: 16),
+                                  child: SizedBox(
+                                    width: 320,
+                                    child: CourseCard(course: course),
+                                  ),
+                                );
+                              },
                             ),
-                          ),
-                        ),
-                      ),
                     ),
                     SizedBox(height: 20),
                     _buildSectionTitle("Recent Course"),
                     SizedBox(height: 20),
                     SizedBox(
-                      height:
-                          271, // Tetap menggunakan height tetap untuk ListView
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        children: List.generate(
-                          3,
-                          (index) => Padding(
-                            padding: EdgeInsets.only(right: 16),
-                            child: SizedBox(
-                              width: 320,
-                              child: CourseCard(),
+                      height: 241,
+                      child: _courses.isEmpty
+                          ? Center(child: CircularProgressIndicator())
+                          : ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: _courses.length,
+                              itemBuilder: (context, index) {
+                                final course = _courses[index];
+                                return Padding(
+                                  padding: EdgeInsets.only(left: 16),
+                                  child: SizedBox(
+                                    width: 320,
+                                    child: CourseCard(course: course),
+                                  ),
+                                );
+                              },
                             ),
-                          ),
-                        ),
-                      ),
                     ),
                     SizedBox(
                         height: 20), // Tambahkan padding bawah jika diperlukan
