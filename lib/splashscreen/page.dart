@@ -1,6 +1,5 @@
 import 'package:coursphere/auth/login.dart';
 import 'package:coursphere/components/navbar.dart';
-import 'package:coursphere/home/home.dart';
 import 'package:coursphere/util/data.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -121,7 +120,7 @@ class _SplashScreenState extends State<SplashScreen> {
                             if (_currentIndex < splashData.length - 1) {
                               _currentIndex++;
                             } else {
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => Login(),
