@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class UserController {
   static const String baseUrl =
-      'https://2b52-125-167-48-101.ngrok-free.app/api/v1';
+      'https://9af3-125-167-48-101.ngrok-free.app/api/v1';
 
 // Fungsi untuk melakukan permintaan HTTP POST
   Future<Map<String, dynamic>> createUser(
@@ -116,6 +116,26 @@ class UserController {
 
     if (response.statusCode != 200) {
       throw Exception('Failed to delete user');
+    }
+  }
+
+// Fungsi untuk melakukan permintaan HTTP POST untuk verify akun pengguna
+  Future<Map<String, dynamic>> verifyUser(String email, String token) async {
+    final url = Uri.parse('$baseUrl/user/verify-otp');
+    final body = jsonEncode({
+      'email': email,
+      'auth_code': token,
+    });
+
+    final response = await http.post(url, body: body, headers: {
+      'ngrok-skip-browser-warning': 'any',
+      'Content-Type': 'application/json',
+    });
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to verify user');
     }
   }
 }

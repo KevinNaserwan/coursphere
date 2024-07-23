@@ -1,5 +1,7 @@
+import 'package:coursphere/auth/login.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -45,7 +47,7 @@ class _ProfileState extends State<Profile> {
                           color: Colors.black.withOpacity(0.2),
                           spreadRadius: 2,
                           blurRadius: 5,
-                          offset: Offset(0, 3), // perubahan shadow offset
+                          offset: Offset(0, 3),
                         ),
                       ],
                     ),
@@ -133,9 +135,7 @@ class _ProfileState extends State<Profile> {
                           horizontal: 30,
                         ),
                       ),
-                      onPressed: () {
-                        // Pass context here
-                      },
+                      onPressed: () => _showLogoutConfirmation(context),
                       child: Text(
                         'Log Out',
                         style: GoogleFonts.poppins(
@@ -152,6 +152,36 @@ class _ProfileState extends State<Profile> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showLogoutConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirm Logout'),
+        content: Text('Are you sure you want to log out?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              _logout(context);
+            },
+            child: Text('Logout'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('auth_token');
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => Login()),
     );
   }
 }

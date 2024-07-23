@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class CourseController {
   static const String baseUrl =
-      'https://2b52-125-167-48-101.ngrok-free.app/api/v1';
+      'https://9af3-125-167-48-101.ngrok-free.app/api/v1';
 
   Future<Map<String, dynamic>> getCourseById(String id) async {
     final url = Uri.parse('$baseUrl/course/$id');

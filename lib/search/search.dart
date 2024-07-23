@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -59,7 +60,7 @@ class _SearchState extends State<Search> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      width: 270,
+                      width: 300,
                       child: TextField(
                         decoration: InputDecoration(
                           contentPadding:
@@ -91,6 +92,75 @@ class _SearchState extends State<Search> {
                   ],
                 ),
               ),
+              SizedBox(height: 10),
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top: 18),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: Offset(0, 1), // perubahan shadow offset
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 14),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset("assets/images/course-image.png",
+                                    width: 60, height: 60),
+                                SizedBox(width: 12),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Java',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        color: const Color(0xFF1A374D),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    SizedBox(height: 6),
+                                    Text(
+                                      '40/56 Lesson',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 10,
+                                        color: const Color(0xFF1A374D),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    SizedBox(height: 6),
+                                    Row(
+                                        children: List.generate(
+                                      5,
+                                      (index) => Icon(Icons.star,
+                                          color: Colors.yellow, size: 12),
+                                    ))
+                                  ],
+                                )
+                              ],
+                            ),
+                            SvgPicture.asset("assets/Icon/arrow-left.svg",
+                                width: 10, height: 18),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         ),

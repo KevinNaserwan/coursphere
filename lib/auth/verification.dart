@@ -1,10 +1,12 @@
+import 'package:coursphere/controller/UserController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Verification extends StatefulWidget {
-  const Verification({Key? key}) : super(key: key);
+  final String email;
+  const Verification({Key? key, required this.email}) : super(key: key);
 
   @override
   _VerificationState createState() => _VerificationState();
@@ -14,6 +16,7 @@ class _VerificationState extends State<Verification> {
   final List<TextEditingController> _controllers =
       List.generate(4, (index) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(4, (index) => FocusNode());
+  final UserController _userController = UserController();
 
   @override
   void initState() {
@@ -54,6 +57,83 @@ class _VerificationState extends State<Verification> {
 
   String _getCombinedValue() {
     return _controllers.map((controller) => controller.text).join();
+  }
+
+  Future<void> _verifyUser() async {
+    String combinedValue = _getCombinedValue();
+    try {
+      Map<String, dynamic> response =
+          await _userController.verifyUser(widget.email, combinedValue);
+      print('Verification success: $response');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
+            content: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: 60),
+                  Image.asset("assets/images/register-success.png", width: 80),
+                  SizedBox(height: 20),
+                  Text(
+                    'Verification Success',
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Your account has been successfully verified',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                  SizedBox(height: 60),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      backgroundColor: const Color(0XFF406882),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 80),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      'Continue',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      print('Verification failed: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Verification failed. Please try again.'),
+        ),
+      );
+    }
   }
 
   @override
@@ -191,76 +271,9 @@ class _VerificationState extends State<Verification> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       backgroundColor: const Color(0XFF406882),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 16.0, horizontal: 30),
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
-                    onPressed: () {
-                      String combinedValue = _getCombinedValue();
-                      print('Combined value: $combinedValue');
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0)),
-                            content: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SizedBox(height: 60),
-                                  Image.asset(
-                                      "assets/images/register-success.png",
-                                      width: 80),
-                                  SizedBox(height: 20),
-                                  Text(
-                                    'Register Success',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Text(
-                                    'Congratulation\nYour account already created',
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.grey.shade600,
-                                    ),
-                                  ),
-                                  SizedBox(height: 60),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      backgroundColor: const Color(0XFF406882),
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 16.0, horizontal: 80),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text(
-                                      'Continue',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 16,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
+                    onPressed: _verifyUser,
                     child: Text(
                       'Submit',
                       style: GoogleFonts.poppins(
@@ -270,33 +283,6 @@ class _VerificationState extends State<Verification> {
                       ),
                     ),
                   ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 30),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Didn’t received the code?',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                        )),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'Resend',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFF6998AB),
-                        ),
-                      ),
-                    )
-                  ],
                 ),
               ),
             ],

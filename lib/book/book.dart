@@ -30,7 +30,7 @@ class _BookState extends State<Book> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.only(top: 60),
+          margin: EdgeInsets.only(top: 100),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: Column(

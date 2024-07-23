@@ -288,12 +288,12 @@ class Register extends StatelessWidget {
       // Handle successful registration response
       print('User created successfully: $response');
 
-      // Navigate to Verification screen
+      // Navigate to Verification screen and pass the email
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) =>
-              Verification(), // Adjust to your verification screen
+              Verification(email: email), // Pass the email here
         ),
       );
     } catch (e) {
