@@ -1,6 +1,11 @@
+import 'package:coursphere/book/component/pdf_view_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class BookDetail extends StatefulWidget {
   const BookDetail({super.key});
@@ -10,6 +15,15 @@ class BookDetail extends StatefulWidget {
 }
 
 class _BookDetailState extends State<BookDetail> {
+  Future<String> loadPdfFromAssets() async {
+    final ByteData data = await rootBundle.load('assets/book/buku.pdf');
+    final bytes = data.buffer.asUint8List();
+    final String path = (await getTemporaryDirectory()).path + '/buku.pdf';
+    final File file = File(path);
+    await file.writeAsBytes(bytes);
+    return path;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -193,8 +207,22 @@ class _BookDetailState extends State<BookDetail> {
                           horizontal: 30,
                         ),
                       ),
-                      onPressed: () {
-                        // Pass context here
+                      onPressed: () async {
+                        try {
+                          String path = await loadPdfFromAssets();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PDFViewPage(path: path),
+                            ),
+                          );
+                        } catch (e) {
+                          print('Error loading PDF: $e');
+                          // Show an error message to the user
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Error loading PDF: $e')),
+                          );
+                        }
                       },
                       child: Text(
                         'Read',

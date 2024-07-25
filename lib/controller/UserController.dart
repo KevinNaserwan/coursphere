@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class UserController {
   static const String baseUrl =
-      'https://9af3-125-167-48-101.ngrok-free.app/api/v1';
+      'https://4922-125-167-48-101.ngrok-free.app/api/v1';
 
 // Fungsi untuk melakukan permintaan HTTP POST
   Future<Map<String, dynamic>> createUser(

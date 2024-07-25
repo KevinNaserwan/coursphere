@@ -31,7 +31,7 @@ class _CourseDetailState extends State<CourseDetail> {
               //   ),
               // ),
               Container(
-                margin: EdgeInsets.only(left: 75),
+                margin: EdgeInsets.only(left: 60),
                 child: Text(
                   'Course',
                   style: GoogleFonts.poppins(
@@ -60,14 +60,14 @@ class _CourseDetailState extends State<CourseDetail> {
           margin: EdgeInsets.only(top: 0),
           child: Column(
             children: [
-              SizedBox(height: 40),
+              SizedBox(height: 20),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 30),
-                      width: 350,
+                      width: 330,
                       height: 180,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),

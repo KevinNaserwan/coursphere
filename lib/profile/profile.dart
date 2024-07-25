@@ -180,8 +180,11 @@ class _ProfileState extends State<Profile> {
   void _logout(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');
-    Navigator.of(context).pushReplacement(
+
+    // Clear the entire navigation stack and replace it with the Login screen
+    Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => Login()),
+      (Route<dynamic> route) => false,
     );
   }
 }

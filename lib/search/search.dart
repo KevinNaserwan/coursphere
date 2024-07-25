@@ -60,7 +60,7 @@ class _SearchState extends State<Search> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      width: 300,
+                      width: 260,
                       child: TextField(
                         decoration: InputDecoration(
                           contentPadding:
